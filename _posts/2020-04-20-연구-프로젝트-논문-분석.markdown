@@ -7,24 +7,15 @@ categories: research machine-learning
 Machine Learning DDOS Detection for consumer Internet Of Things Devices 논문 해석
 ======
 
-Jekyll requires blog post files to be named according to the following format:
+해당 블로그 포스트는 [Machine Learning DDOS Detection for consumer Internet Of Things Devices](https://ieeexplore.ieee.org/document/8424629) 논문의 이해를 돕고 분석을 하기 위해 작성되었습니다. 
 
-`YEAR-MONTH-DAY-title.MARKUP`
 
-Where `YEAR` is a four-digit number, `MONTH` and `DAY` are both two-digit numbers, and `MARKUP` is the file extension representing the format used in the file. After that, include the necessary front matter. Take a look at the source for this post to get an idea about how it works.
 
-Jekyll also offers powerful support for code snippets:
+논문을 읽기전에 알아야하는 상식들 
+======
+2020년, 우리는 이제 일상생활중에 손쉽게 IOT를 사용하며 볼 수 있습니다. 여기서 IOT는 정확히 무엇일까요?
 
-{% highlight ruby %}
-def print_hi(name)
-  puts "Hi, #{name}"
-end
-print_hi('Tom')
-#=> prints 'Hi, Tom' to STDOUT.
-{% endhighlight %}
+Internet Of Things, 즉 사물 인터넷은 사물에 센서를 부착하여 실시간 데이터를 인터넷으로 주고 받는 기술이나 환경을 말합니다. IOT가 Machine to Machine이라고도 불리는 이유는 사람이 중간에 개입하지 않고 기기들이 인터넷을 통해 알아서 정보를 수집하고 일을 처리하며 서로 통신을 하기 때문입니다. 사용자의 음성 명령어를 분석하고 집 안의 IOT 기기를 조작할 수 있는 Smart home device인 기가지니나 Google Home을 예시로 들 수 있습니다. 또한 Apple watch 처럼 사용자가 몸에 착용할 수 있는 IOT device 는 사용자의 걸음 수나 칼로리 소모량, 운동 거리 등을 체크하여 운동성을 분석하고 올바른 운동법까지 조언해줍니다. 
 
-Check out the [Jekyll docs][jekyll-docs] for more info on how to get the most out of Jekyll. File all bugs/feature requests at [Jekyll’s GitHub repo][jekyll-gh]. If you have questions, you can ask them on [Jekyll Talk][jekyll-talk].
-
-[jekyll-docs]: https://jekyllrb.com/docs/home
-[jekyll-gh]:   https://github.com/jekyll/jekyll
-[jekyll-talk]: https://talk.jekyllrb.com/
+논문에 의하면 2017년 사물 인터넷 시장은 매년 증폭하여 2017년엔 80억  이였던 IOT 기기의 숫자가 2020년에는 무려 200억이 되었다고 합니다.
+저자는 IOT 제품은  매년 유형이 다양해지고 사용수도 늘고있지만 보안은 아직 매우 취약하다는 문제점을 지적합니다. 방화벽의 부제, 오래된 리눅스 펌웨어, 암호화 되지 않은 민감한 데이터 노출과 같은 보안 문제로 IOT는 보안 위협에 노출되어 있습니다.
