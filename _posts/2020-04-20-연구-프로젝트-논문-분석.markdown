@@ -13,7 +13,7 @@ Machine Learning DDoS Detection for consumer Internet Of Things Devices 논문 �
 ![alt text](/images/iot.jpg "IOT image")
 
 
-I, II  논문을 읽기 전에 알아야 할 배경 지식
+논문을 읽기 전에 알아야 할 배경 지식
 ----
 2020년, 우리는 이제 일상생활중에 손쉽게 IOT 기기들을 사용하며 접할수 있습니다. 
 
@@ -120,7 +120,7 @@ DoS 트래픽을 수집하기 위해 Mirai 감염 장치가 실행할 가장 일
 
 감염이 된 장치, 즉 Dos 공격을 할 장치로는 Kali Linux 가상 머신을 노트북에 설치하여 사용했고, Dos 어택의 대상자는 아파치 웹 서버를 실행하는 Rasberry Pi 2를 사용했습니다. 두 기기를 라즈베리 파이 3의 Wifi 엑세스 포인트와 연결 하였습니다. 도스소스는 어택 대상자에게 각 3가지 클래스 마다 1.5분동안 도스 공격을 가했습니다.
 
-이를 통해 수집한 정상적인 트래픽과 도스 어택의 정보를 합치고 소스 IP 주소, Mac 주소와 패킷 전송 시간을 도용하여 마치 IoT기기가 도스 공격과 정상적인 트래픽을 동시에 생성하는 것 처럼 시뮬레이션을 하였습니다. 
+이를 통해 수집한 정상적인 트래픽과 도스 어택의 정보를 합치고 소스 IP 주소, Mac 주소와 패킷 전송 시간을 도용하여 마치 IoT기기가 도스 공격과 정상적인 트래픽을 동시에 생성하는 것 처럼 시뮬레이션을 하였습니다. 이를 통해 491,855 패킷(459,565 악의적인 공격 패킷과 32,290 정상적인 패킷) 을 생성하였습니다. 
 
 [특징 추출]
 ----
@@ -193,25 +193,28 @@ Stateful feature은 반대로, 네트워크 트래픽이 시간에 따라 어떻
   true positives/ (true positive + false positive)
 2. Recall(재현율) : 실제로 정답이 True 인 것들 중에서 분류기가 True로 예측한 비율
    true positive/(True Positive + False Negatives)
-
 3. F1(조화평균): recall, precision 둘 중 하나가 0에 가깝게 낮을 때 지표에 그것이 균형있게 반영하여 모델의 성능이 좋지 않다는 것을 잘 확인하기 위한 지표. 
    2 * (precision*recall) / (precision+recall)
   
 4. Accuracy (정확도) : 전체 예측 건수에서 정답을 맞힌 건수의 비율 
  (true positive + true negative) / (true positive + true negative + false positive + false  negative)
 
-이를 통해 테이블을 이해하면 (4=KN,DT,RF<,NN)가지 모델은 모두 굉장히 높은 정답률을 가졌다는걸 확인 할 수 있다. 그 중에 제일 낮은 정답률을 가진 것은 Support vector machine with linear kernel(LSVM) 이였는데 이는 데이터가 linear 하게 나눠질 수 없다는 걸 뜻합니다.
-
+이를 통해 테이블을 이해하면  4가지 (KN,DT,RF,NN) 모델은 모두 굉장히 높은 정답률을 가졌다는걸 확인 할 수 있습니다. 5가지 모델중에 제일 낮은 정답률을 가진 것은 Support vector machine with linear kernel(LSVM) 이였는데 이는 데이터가 선형적으로 분리될 수 없다는 걸 나타냅니다. 
 
 ![alt text](/images/gini_score.png "Logo Title Text 1")
 ###### 이미지 출처: Machine Learning DDoS Detection for consumer Internet Of Things Devices
+
+위 지표는 지니 불순도입니다. 이는 집합에 이질적인 것이 얼마나 섞였는지를 측정하는 지표이며 어떤 집합에서 한 항목을 뽑아 무작위로 라벨을 추정할 때 틀릴 확률을 말합니다. 집합에 있는 항목이 모두 같다면 지니 불순도는 최솟값(0)을 갖게 되며 이 집합은 완전히 순수하다고 할 수 있습니다. 이 지표를 통해 우리는 # destinations, bandwidth 인 stateful feature 들은 Gini score이 매우 낮은걸 알 수 있는데 이는 normal traffic과 attack traffic을 해당 feature을 통해 구분하기 어렵다는걸 뜻합니다. 반대로 packet size와 is_HTTP(protocol 분류) 와 같은 stateless feature들은 높은 gini score 을 가져서 이항 분류를 하는데 굉장히 중요한 특징이라는걸 알 수 있습니다. 
 
 
 ![alt text](/images/features.png "Logo Title Text 1")
 ###### 이미지 출처: Machine Learning DDoS Detection for consumer Internet Of Things Devices
 
 
+하지만 그렇다고 stateful feature이 전혀 도움이 되지 않는걸까요? stateless feature 만을 사용한 모델과 두 가지를 모두 사용한 모델을 비교한 지표입니다. stateful feature을 통해 F1 스코어가 모든 알고리즘에서 0.01~0.05 증가한걸 볼 수 있습니다.
 
 
+저자는 이 논문은 실제 환경에서 IoT Dos 탐지를 위한 머신 러닝 모델 연구에 동기를 부여할 것이라 말합니다. 또한 앞으로 정확도를 더 높이기 위해 더 많은 양, 그리고 다양한 IoT device를 사용하여 데이터를 수집할 것을 말합니다. 또한 더 다양한 feature을 사용하고 더 복잡한 머신러닝 기술을 사용한다면 더 성능이 높은 파이프라인을 구성할 수 있을것이라 주장합니다.
 
 
+끝으로, 본 연구에서는 패킷 레벨 머신 학습을 통해 IoT 장치의 일반 트래픽과 DoS 공격 트래픽을 정확하게 구분할 수 있음을 보여 주었습니다. 
