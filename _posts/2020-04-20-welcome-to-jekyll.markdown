@@ -1,10 +1,11 @@
 ---
 layout: post
-title:  "Welcome to Jekyll!"
+title:  "연구 프로젝트 논문 분석"
 date:   2020-04-20 14:33:49 +0900
-categories: jekyll update
+categories: research machine-learning
 ---
-You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run `jekyll serve`, which launches a web server and auto-regenerates your site when a file is updated.
+Machine Learning DDOS Detection for consumer Internet Of Things Devices 논문 해석
+======
 
 Jekyll requires blog post files to be named according to the following format:
 
