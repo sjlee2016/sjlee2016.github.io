@@ -10,7 +10,7 @@ Machine Learning DDoS Detection for consumer Internet Of Things Devices 논문 �
 해당 블로그 포스트는 [Machine Learning DDoS Detection for consumer Internet Of Things Devices](https://ieeexplore.ieee.org/document/8424629) 논문의 이해를 돕고 분석을 하기 위해 작성되었습니다. 
 
 
-![alt text](/images/iot.jpg "Packet Size")
+![alt text](/images/iot.jpg "IOT image")
 
 
 I, II  논문을 읽기 전에 알아야 할 배경 지식
@@ -90,18 +90,19 @@ IV.  비정상적인 트래픽 탐지 파이프라인 설계
 
 3. 특징 추출:  각 패킷에 대해 Stateless and Stateful 특징들을 추출한다.
 
-4. 이항 분류 : Random forest, K-nearest neighbors, support vector machines, decision trees, neural network. 총 5가지 머신러닝 알고리즘을 사용하여 이항 분류를 하였다. 각 머신러닝 분류기에 대해서는 해당 포스트에 더 자세히 작성하였습니다.
-  
+4. 이항 분류 : Random forest, K-nearest neighbors, support vector machines, decision trees, neural network. 총 5가지 머신러닝 알고리즘을 사용하여 이항 분류를 하였다. 
 
 
+
+[데이터 수집]
+----
 
 ![alt text](/images/setup.png "Packet Size")
 
 ###### 이미지 출처: Machine Learning DDoS Detection for consumer Internet Of Things Devices
 
-[데이터 수집]
-----
-이 실험을 재구현을 하게 된다면 제일 걱정되는 부분인, 바로 데이터를 수집하는 단계입니다. 저자도 언급했드시 IoT DoS 트래픽 데이터는 공개되있지 않아서 직접 네트워크를 구축하고 트래픽을 만들어서 어택을 하고 데이터 수집해야 합니다.
+
+이 실험을 재구현을 하게 된다면 제일 걱정되는 부분인, 바로 데이터를 수집하는 단계입니다. 저자도 언급했드시 IoT DoS 트래픽 데이터는 퍼블릭 데이터가 없어 직접 네트워크를 구축하고 트래픽을 만들어서 어택을 하고 데이터 수집해야 합니다.
 
 저자가 구축한 IoT 장치 네트워크는 아래와 같습니다.
 
@@ -131,11 +132,12 @@ Stateless feature는 패킷 하나에 저장되어 있는 정보입니다. 따�
 ![alt text](/images/packet_size_graph.png "Packet Size")
 ###### 이미지 출처: Machine Learning DDoS Detection for consumer Internet Of Things Devices
 
-그래프를 보면 normal traffic은 패킷 사이즈가 
+이 그래프를 보면 normal traffic은 패킷 사이즈가 0~1200 bytes에 다양하게 분포되있지만 attack traffic은 거의 대부분이 100 bytes 보다 작다는걸 확인 할 수 있습니다. 
+
 
 ![alt text](/images/interpack_interval.png "Logo Title Text 1")
 ###### 이미지 출처: Machine Learning DDoS Detection for consumer Internet Of Things Devices
-
+이 그래프를 보면 attack traffic 은 normal traffic에 비해 패킷들의 interval 을 시간에 대한 1차 미분 한 값과 2차 미분 한 값이 더 빨리 증가한다는걸 볼 수 있습니다. 
 
 
 ![alt text](/images/protocol_distribution.png "Logo Title Text 1")
@@ -145,29 +147,67 @@ Stateless feature는 패킷 하나에 저장되어 있는 정보입니다. 따�
 | ------------- |:-------------:| -----:|
 | Packet Size     |  100-1200 bytes 로 다양하다   |  최대한 많이 연결 신청을 하기 위해 크기가 매우 작다. 약 90 %가 100 bytes 보다 크기가 작다 |
 | Interpacket Interval   | 규칙적인 간격으로 패킷 사이에 시간이 걸린다|  거의 0 에 가까운 패킷 사이에 시간 간격 |
-| Protocol Distribution | 비디오 스트리밍으로 인해 UDP 프로토콜이 TCP 프로토콜보다 약 3배 더 많았다      |   TCP 프로토콜이 UDP 보다 더 많았다 |
+| Protocol Distribution | 비디오 스트리밍으로 인해 UDP 프로토콜이 TCP 프로토콜보다 약 3배 더 많았다      |   TCP 프로토콜이 UDP 보다 약 3배 더 많았다 |
 
 ![alt text](/images/stateful_features.png "Logo Title Text 1")
 
 Stateful feature은 반대로, 네트워크 트래픽이 시간에 따라 어떻게 발전하는지 나타냅니다.
 그렇기 때문에 stateful feature을 추출하기 위해서는 네트워크 트래픽을 기기마다 나눈 뒤 또 시간마다 나누어야 하는 번거로움이 있으며 이러한 과정에서 어쩔 수 없는 오버헤드가 발생합니다. 
 
-| Stateful Features | Normal Traffic와 DoS Attack의 차이 |
+| Stateful Features | Normal Traffic와 DoS Attack의 차이 
 | ------------- |:-------------:| -----:|
-| Distinct destination IP address    |   DoS Attack이 Normal Traffic에 비해 더 많은 end point를 가진다|
+| Average Bandwidth    |   DoS Attack이 Normal Traffic에 비해 더 높은 평균 bandwidth 를 가진다|
 | Changes in the number of distinct destination IP address  | DoS Attack이 Normal Traffic에 비해 더 많은 새로운 end point를 가진다 |
 
 
 [실험 결과]
 ----
 
+실험에서 사용한 classifier은 다음과 같습니다. 
+1) K-nearest neighbors algorithm(KN)
+2) Support vector machine with linear kernel(LSVM)
+3) Decision tree using Gini impurity scores (DF)
+4) Random Forest using Gini impurity scores (RF)
+5) Neural Network(NN)
+
 ![alt text](/images/classification_results.png "Logo Title Text 1")
 ###### 이미지 출처: Machine Learning DDoS Detection for consumer Internet Of Things Devices
 
-![alt text](/images/features.png "Logo Title Text 1")
-###### 이미지 출처: Machine Learning DDoS Detection for consumer Internet Of Things Devices
+5가지의 다른 분류 모델을 사용하여 머신러닝 학습을 시켰습니다. 수집한 데이터 85%를 사용하여 트레이닝을 시켰고 나머지 15% 데이터로 학습 결과를 테스트 하였습니다. 결과는 아래와 같습니다. 
+
+분류 모델 성능 평가 지표를 이해하기 위해서는 머신러닝 모델이 틀리는 경우의 수들을 먼저 이해 해봅시다.
+
+
+| Case | Definition
+| ---- | ------ | 
+| True Positive | 실제 positive인 정답을 positive라고 알맞게 예측 |
+| True Negative | 실제 negative인 정답을 negative라고 알맞게 예측 |
+| False Positive | 실제 negative 인 정답을 positive이라고 틀리게 예측 (Error Type 1)
+| False Negative | 실제 positive인 정답을 negative라고 예측 (Error Type 2) | 
+
+이 실험에서 False Positive은 실제로 normal 한 traffic을 DoS 어택라고 틀리게 예측하는게 됩니다. 한편, False Negative은 실제 Dos 어택을 normal traffic 이라고 생각하여 탐지하지 못하는게 되겠습니다. 
+
+표에서는 총 4가지의 지표를 사용하여 모델의 성능을 비교합니다. 
+
+1. Precision(정밀도) : True라고 예측한 것들 중에서 실제로 True인 비율 
+  true positives/ (true positive + false positive)
+2. Recall(재현율) : 실제로 정답이 True 인 것들 중에서 분류기가 True로 예측한 비율
+   true positive/(True Positive + False Negatives)
+
+3. F1(조화평균): recall, precision 둘 중 하나가 0에 가깝게 낮을 때 지표에 그것이 균형있게 반영하여 모델의 성능이 좋지 않다는 것을 잘 확인하기 위한 지표. 
+   2 * (precision*recall) / (precision+recall)
+  
+4. Accuracy (정확도) : 전체 예측 건수에서 정답을 맞힌 건수의 비율 
+ (true positive + true negative) / (true positive + true negative + false positive + false  negative)
+
+이를 통해 테이블을 이해하면 (4=KN,DT,RF<,NN)가지 모델은 모두 굉장히 높은 정답률을 가졌다는걸 확인 할 수 있다. 그 중에 제일 낮은 정답률을 가진 것은 Support vector machine with linear kernel(LSVM) 이였는데 이는 데이터가 linear 하게 나눠질 수 없다는 걸 뜻합니다.
+
 
 ![alt text](/images/gini_score.png "Logo Title Text 1")
+###### 이미지 출처: Machine Learning DDoS Detection for consumer Internet Of Things Devices
+
+
+![alt text](/images/features.png "Logo Title Text 1")
 ###### 이미지 출처: Machine Learning DDoS Detection for consumer Internet Of Things Devices
 
 
