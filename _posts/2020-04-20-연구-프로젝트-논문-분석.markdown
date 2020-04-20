@@ -115,7 +115,8 @@ DoS 트래픽을 수집하기 위해 Mirai 감염 장치가 실행할 가장 일
 실험에서는 stateless와 stateful로 총 두 가지 유형의 특징을 사용하여 정상 트래픽과 공격 IoT 트래픽을 차별화 해주었습니다. 
 
 Stateless feature 이란 
-| Stateless Features | Normal Traffic | DoS Attack
+
+| Stateless Features | Normal Traffic | DoS Attack |
 | ------------- |:-------------:| -----:|
 | Packet Size     |  100-1200 bytes 로 다양하다   |  최대한 많이 연결 신청을 하기 위해 크기가 매우 작다. 약 90 %가 100 bytes 보다 크기가 작다 |
 | Interpacket Interval   | 규칙적인 간격으로 패킷 사이에 시간이 걸린다|  거의 0 에 가까운 패킷 사이에 시간 간격 |
