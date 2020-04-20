@@ -10,7 +10,7 @@ Machine Learning DDoS Detection for consumer Internet Of Things Devices 논문 �
 해당 블로그 포스트는 [Machine Learning DDoS Detection for consumer Internet Of Things Devices](https://ieeexplore.ieee.org/document/8424629) 논문의 이해를 돕고 분석을 하기 위해 작성되었습니다. 
 
 
-![alt text](../images/iot.jpg "Packet Size")
+![alt text](/images/iot.jpg "Packet Size")
 
 
 I, II  논문을 읽기 전에 알아야 할 배경 지식
@@ -26,7 +26,7 @@ Internet Of Things, 즉 사물 인터넷은 사물에 센서를 부착하여 실
 저자는 IOT 제품은  매년 유형이 다양해지고 사용수도 늘고있지만 보안은 아직 매우 취약하다는 문제점을 지적합니다. 방화벽의 부제, 오래된 리눅스 펌웨어, 암호화 되지 않은 민감한 데이터 노출과 같은 보안 문제로 IOT는 보안 위협에 노출되어 있습니다. 
 
 
-![alt text](../images/mirai.jpg "Packet Size")
+![alt text](/images/mirai.jpg "Packet Size")
 
 
 보안이 허술한 사물 인터넷 기기는 어떠한 결과를 낳을까요? 
@@ -95,7 +95,7 @@ IV.  비정상적인 트래픽 탐지 파이프라인 설계
 
 
 
-![alt text](../images/setup.png "Packet Size")
+![alt text](/images/setup.png "Packet Size")
 
 ###### 이미지 출처: Machine Learning DDoS Detection for consumer Internet Of Things Devices
 
@@ -128,17 +128,17 @@ DoS 트래픽을 수집하기 위해 Mirai 감염 장치가 실행할 가장 일
 Stateless feature는 패킷 하나에 저장되어 있는 정보입니다. 따라서 트래픽 스트림을 시간에 대해 나누어 분석할 필요 없이 각 패킷에 저장되어 있는 정보를 저장하면 됩니다. 
 
 
-![alt text](../images/packet_size_graph.png "Packet Size")
+![alt text](/images/packet_size_graph.png "Packet Size")
 ###### 이미지 출처: Machine Learning DDoS Detection for consumer Internet Of Things Devices
 
 그래프를 보면 normal traffic은 패킷 사이즈가 
 
-![alt text](../images/interpack_interval.png "Logo Title Text 1")
+![alt text](/images/interpack_interval.png "Logo Title Text 1")
 ###### 이미지 출처: Machine Learning DDoS Detection for consumer Internet Of Things Devices
 
 
 
-![alt text](../images/protocol_distribution.png "Logo Title Text 1")
+![alt text](/images/protocol_distribution.png "Logo Title Text 1")
 ###### 이미지 출처: Machine Learning DDoS Detection for consumer Internet Of Things Devices
 
 | Stateless Features | Normal Traffic | DoS Attack
@@ -147,7 +147,7 @@ Stateless feature는 패킷 하나에 저장되어 있는 정보입니다. 따�
 | Interpacket Interval   | 규칙적인 간격으로 패킷 사이에 시간이 걸린다|  거의 0 에 가까운 패킷 사이에 시간 간격 |
 | Protocol Distribution | 비디오 스트리밍으로 인해 UDP 프로토콜이 TCP 프로토콜보다 약 3배 더 많았다      |   TCP 프로토콜이 UDP 보다 더 많았다 |
 
-![alt text](../images/stateful_features.png "Logo Title Text 1")
+![alt text](/images/stateful_features.png "Logo Title Text 1")
 
 Stateful feature은 반대로, 네트워크 트래픽이 시간에 따라 어떻게 발전하는지 나타냅니다.
 그렇기 때문에 stateful feature을 추출하기 위해서는 네트워크 트래픽을 기기마다 나눈 뒤 또 시간마다 나누어야 하는 번거로움이 있으며 이러한 과정에서 어쩔 수 없는 오버헤드가 발생합니다. 
@@ -161,13 +161,13 @@ Stateful feature은 반대로, 네트워크 트래픽이 시간에 따라 어떻
 [실험 결과]
 ----
 
-![alt text](../images/classification_results.png "Logo Title Text 1")
+![alt text](/images/classification_results.png "Logo Title Text 1")
 ###### 이미지 출처: Machine Learning DDoS Detection for consumer Internet Of Things Devices
 
-![alt text](../images/features.png "Logo Title Text 1")
+![alt text](/images/features.png "Logo Title Text 1")
 ###### 이미지 출처: Machine Learning DDoS Detection for consumer Internet Of Things Devices
 
-![alt text](../images/gini_score.png "Logo Title Text 1")
+![alt text](/images/gini_score.png "Logo Title Text 1")
 ###### 이미지 출처: Machine Learning DDoS Detection for consumer Internet Of Things Devices
 
 
