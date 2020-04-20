@@ -4,10 +4,10 @@ title:  "연구 프로젝트 논문 분석"
 date:   2020-04-20 14:33:49 +0900
 categories: research machine-learning
 ---
-Machine Learning DDOS Detection for consumer Internet Of Things Devices 논문 해석
+Machine Learning DDoS Detection for consumer Internet Of Things Devices 논문 해석
 ----
 
-해당 블로그 포스트는 [Machine Learning DDOS Detection for consumer Internet Of Things Devices](https://ieeexplore.ieee.org/document/8424629) 논문의 이해를 돕고 분석을 하기 위해 작성되었습니다. 
+해당 블로그 포스트는 [Machine Learning DDoS Detection for consumer Internet Of Things Devices](https://ieeexplore.ieee.org/document/8424629) 논문의 이해를 돕고 분석을 하기 위해 작성되었습니다. 
 
 
 
