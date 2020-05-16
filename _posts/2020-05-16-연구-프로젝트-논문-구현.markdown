@@ -1,0 +1,220 @@
+---
+layout: post
+title:  "연구 프로젝트 논문 구현"
+date:   2020-05-16 20:14:49 +0900
+categories: research machine-learning
+---
+Machine Learning DDoS Detection for consumer Internet Of Things Devices 논문 해석
+----
+
+해당 블로그 포스트는 [Machine Learning DDoS Detection for consumer Internet Of Things Devices](https://ieeexplore.ieee.org/document/8424629) 논문의 이해를 돕고 분석을 하기 위해 작성되었습니다. 
+
+
+![alt text](/images/iot.jpg "IOT image")
+
+
+논문을 읽기 전에 알아야 할 배경 지식
+----
+2020년, 우리는 이제 일상생활 중에 손쉽게 IOT 기기들을 사용하며 접할 수 있습니다.
+
+IoT는 무엇일까요?
+====
+
+Internet Of Things, 즉 사물 인터넷은 사물에 센서를 부착하여 실시간 데이터를 인터넷으로 주고받는 기술이나 환경을 말합니다. IoT가 Machine to Machine이라고도 불리는 이유는 사람이 중간에 개입하지 않고 기기들이 인터넷을 통해 알아서 정보를 수집하고 일을 처리하며 서로 통신을 하기 때문입니다. 사용자의 음성 명령어를 분석하고 집 안의 IoT 기기를 조작할 수 있는 Smart home device인 기가지니나 Google Home을 예시로 들 수 있습니다. 또한 Apple watch 처럼 사용자가 몸에 착용할 수 있는 IOT device 는 사용자의 걸음 수나 칼로리 소모량, 운동 거리 등을 체크하여 운동성을 분석하고 올바른 운동법까지 조언해줍니다. 
+
+논문에 의하면 2017년 사물 인터넷 시장은 매년 증폭하여 2017년엔 80억  이였던 IoT 기기의 숫자가 2020년에는 무려 200억이 되었다고 합니다.
+저자는 IOT 제품은  매년 유형이 다양해지고 사용수도 늘고 있지만 보안은 아직 매우 취약하다는 문제점을 지적합니다. 방화벽의 부제, 오래된 리눅스 펌웨어, 암호화되지 않은 민감한 데이터 노출과 같은 보안 문제로 IOT는 보안 위협에 노출되어 있습니다. 
+
+
+![alt text](/images/mirai.jpg "Packet Size")
+
+
+보안이 허술한 사물 인터넷 기기는 어떠한 결과를 낳을까요? 
+====
+
+2016년 10월, 해커는 IOT 기기에 악성 코드를 설치하여 '좀비'로 만들어 네트워크상에서 해커가 마음대로 제어할 수 있게 하여 미라이 봇넷(Mirai Bonet)을 만들었습니다. 이를 통해 도메인 주소 조회 서비스 제공업체인 Dyn을 대규모 디도스 공격하였고 업체를 사용하고 있던 넷플릭스, 트위터, 뉴욕 타임즈를 포함한 여러 사이트가 마비되었습니다. 
+
+디도스 공격이란 무엇일까요? 
+=====
+
+DoS(Denial of Service) 공격은 웹 사이트 또는 애플리케이션과 같은 대상 시스템의 가용성과 합법적인 최종 사용자에게 악영향을 미치려는 악의적인 시도입니다. 일반적으로 공격자는 대량의 패킷 또는 요청을 생성하여 궁극적으로 대상 시스템을 마비시킵니다. DDoS(Distributed Denial of Service) 는 수많은 컴퓨터에 악성코드를 심어 좀비 PC로 만들어 해커에 의해 원경 조종을 당하여 특정 웹사이트에 동시 접속하게 되고,이로 인해 트래픽 과부하가 일어나는 것입니다. 서버는 허용할 수 있는 초당 트랙픽 양이 정해져 있는데 수많은 컴퓨터가 한 번에 패킷을 집중적으로 보내게 되면 서버가 버티지 못하고 마비가 되는 것입니다. 4차 산업혁명 시대에서 핵심기술로 꼽히고 있는 IoT가 사이버 범죄자들의 공격무기로도 활용될 수도 있다는 뜻입니다. 
+
+머신러닝을 통한 IoT 기기 DDoS공격 검출 
+----
+
+Mirai Bonet 의 코드 2017년 현재 오픈소스가 되어 
+IoT 기기는 많은 위험에 노출되어 있습니다. 그러하여 저자는 이 논문을 통해 해당 문제점의 해결책을 제안합니다. Data collection , feature extraction, binary classification 즉 데이터를 모으고, 특징을 추출하는 머신러닝 파이프라인을 만들어 99%의 성공률로 정상적인 트래픽인지 DDoS 공격인지 구분할 수 있다고 주장합니다. 그리하여 연구의 목표는 smart home LAN 에서 발생한 DoS 공격을 탐지하고 막는 것입니다.
+
+A. IoT 기기의 데이터 트래픽의 특징
+====
+이미 오래전부터 네트워크 침입 탐지 시스템(Network intrusion detection systems(NIDS))은 존재하였습니다. 하지만 이는 IoT 네트워크를 특정 대상으로 하는 시스템은 아니었기에 IoT 트래픽의 특징을 사용하여 구분하는 새로운 시스템이 필요합니다. 논문에서는 IoT 트래픽에 대해 가설을 세웁니다. 
+
+저자의 가설에 의하면 IoT 트래픽은 아래와 같은 특징을 가집니다. 
+1. 노트북과 스마트폰은 인터넷 브라우징에 의해 많은 통신의 극점(end point)를 가지지만,  IoT 기기는 비교적 제한적인 end point를 가진다.
+2. 비-IoT 트래픽보다 고정된 트래픽 상태들을 가진다. 예를 들어, 스마트 전구는 켜기, 끄기, Wifi 와 연결중인 세 가지 상태만을 가지며 이는 각자 고유한 네트워크 트래픽 패턴을 가진다.
+
+B. 네트워크 미들박스의 제한 
+==== 
+
+이 머신러닝 파이프라인은 IoT 기기의 네트워크 트래픽을 기록하기 위해 네트워크 미들박스로 라우터를 사용합니다. 네트워크의 미들 박스란 특정 지 능적 기능을 가진 네트워크의 중간자로서 LAN 네트워크에서 사용자 IoT 기기 간의 트래픽을 검사, 저장, 보관 및 차단할 수 있습니다. 따라서 LAN의 와이파이 장치 또는 장치에서 인터넷으로의 모든 트래픽은 미들 박스를 거쳐야 합니다.
+
+이러한 미들 박스는 메모리와 프로세싱 파워의 제한이 있어 DDoS 공격 탐지 알고리즘에 제약 조건 부여합니다. 
+
+1. Lightweight Features
+   
+   라우터는 높은 대역폭(주어진 시간 동안 네트워크 연결을 통해 흐를 수 있는 최대 비트수) 트래픽을 처리 할 수 있어야한다.  그러므로 생성 되는 feature detection에 사용되는 모든 특징은 경량화되어야 한다.
+
+2. Protocol Agnostic Features
+   
+   라우터는 다양한 프로토콜을 사용한 패킷을 처리해야 한다. 따라서 탐지 알고리즘은 모든 프로토콜에서 공통으로 나타나는 패킷 특성을 사용해야 한다.
+
+3. Low Memory Implementation
+   
+   라우터의 메모리는 매우 제한적이다. 메모리를 캐싱하는 것 또한 알고리즘에 지연 시간을 더하기 때문에 적절하지 않다. 그러하기 때문에 알고리즘은 단시간 동안의 정보를 저장해야 함
+
+
+IV.  비정상적인 트래픽 탐지 파이프라인 설계 
+----
+논문에서 설명되는 파이트라인은 총 4단계를 가집니다.
+
+1. 트래픽 캡처
+   이 단계에서 스마트 홈 기기가 보내는 모든 패킷에 대하여 총 6가지의 트래픽 정보를 기록한다.
+   - 소스 IP 주소
+   - 소스 포트
+   - 대상 IP 주소
+   - 대상 포트
+   - 패킷 크기
+   - 타임스탬프
+  
+2. 기기와 시간에 따라 패킷 분류 : 소스 IP 주소를 사용하여 각 기기에서 온 패킷을 분류한다. 더 나아가, 타임 스탬프를 통해 더 겹치지 않는 시간으로 나뉜다.
+
+3. 특징 추출:  각 패킷에 대해 Stateless and Stateful 특징들을 추출한다.
+
+4. 이항 분류 : Random forest, K-nearest neighbors, support vector machines, decision trees, neural network. 총 5가지 머신러닝 알고리즘을 사용하여 이항 분류를 하였다. 
+
+
+
+[데이터 수집]
+----
+
+![alt text](/images/setup.png "Packet Size")
+
+###### 이미지 출처: Machine Learning DDoS Detection for consumer Internet Of Things Devices
+
+
+이 실험을 재구현을 하게 된다면 제일 걱정되는 부분인, 바로 데이터를 수집하는 단계입니다. 저자도 언급했듯이 IoT DoS 트래픽 데이터는 퍼블릭 데이터가 없어 직접 네트워크를 구축하고 트래픽을 만들어서 어택하고 데이터 수집해야 합니다.
+
+저자가 구축한 IoT 장치 네트워크는 아래와 같습니다.
+
+실험에서 제일 중요한 미들 박스로는 Wifi 엑세스 포인트를 가진 라즈베리 파이를 사용하였습니다. 총 세 가지 IoT 기기(Yi Home Camera, Belkin Wemo Smart Switch와 안드로이드폰)들을 해당 와이파이에 연결하였습니다. 끝으로, 안드로이드폰을 블루투스를 통해 위닝스 혈압 감시기와 연결하였습니다. 
+
+non-Dos, 즉 도스 공격이 아닌 정상적인 트래픽 정보를 수집하기 위해 10분 동안 세 개의 IoT 장치 모두를 사용하며 pcap 파일을 저장하고 모든 패킷을 로깅하였습니다. 정상적인 트래픽 수집을 위해 Yi 카메라로 비디오를 스트리밍하고, 스마트 워치를 껏다 켜고 펌웨어 업데이트를 하였습니다. 또한, 혈압 감사기로 혈압을 재고 클라우드 서버에 전송하였습니다. 그 후, 수집한 모든 pcap file에서 IoT 와 관련이 없는 파일들은 제거하였습니다. 
+
+DoS 트래픽을 수집하기 위해 Mirai 감염 장치가 실행할 가장 일반적인 세 가지 클래스를 시뮬레이션했습니다. 
+
+1) TCP SYN flood (Linux hping3 utility 사용)
+   
+2) UDP flood  (Linux hping3 utility 사용)
+   
+3) HTTP GET flood (Goldeneye tool 사용) 
+
+감염된 장치, 즉 Dos 공격을 할 장치로는 Kali Linux 가상 머신을 노트북에 설치하여 사용했고, Dos 어택의 대상자는 아파치 웹 서버를 실행하는 Rasberry Pi 2를 사용했습니다. 두 기기를 라즈베리 파이 3의 Wifi 엑세스 포인트와 연결 하였습니다. 도스 소스는 어택 대상자에게 각 3가지 클래스마다 1.5분 동안 도스 공격을 가했습니다.
+
+이를 통해 수집한 정상적인 트래픽과 도스 어택의 정보를 합치고 소스 IP 주소, Mac 주소와 패킷 전송 시간을 도용하여 마치 IoT기기가 도스 공격과 정상적인 트래픽을 동시에 생성하는 것처럼 시뮬레이션을 하였습니다. 이를 통해 491,855 패킷(459,565 악의적인 공격 패킷과 32,290 정상적인 패킷) 을 생성하였습니다. 
+
+[특징 추출]
+----
+실험에서는 stateless와 stateful로 총 두 가지 유형의 특징을 사용하여 정상 트래픽과 공격 IoT 트래픽을 차별화해주었습니다. 
+
+Stateless feature는 패킷 하나에 저장된 정보입니다. 따라서 트래픽 스트림을 시간에 대해 나누어 분석할 필요 없이 각 패킷에 저장된 정보를 저장하면 됩니다. 
+
+
+![alt text](/images/packet_size_graph.png "Packet Size")
+###### 이미지 출처: Machine Learning DDoS Detection for consumer Internet Of Things Devices
+
+이 그래프를 보면 normal traffic은 패킷 사이즈가 0~1200 bytes에 다양하게 분포되 있지만 attack traffic은 대부분이 100 bytes보다 작다는걸 확인 할 수 있습니다. 
+
+
+![alt text](/images/interpack_interval.png "Logo Title Text 1")
+###### 이미지 출처: Machine Learning DDoS Detection for consumer Internet Of Things Devices
+이 그래프를 보면 attack traffic 은 normal traffic에 비해 패킷들의 interval 을 시간에 대한 1차 미분 한 값과 2차 미분 한 값이 더 빨리 증가한다는 걸 볼 수 있습니다. 
+
+
+![alt text](/images/protocol_distribution.png "Logo Title Text 1")
+###### 이미지 출처: Machine Learning DDoS Detection for consumer Internet Of Things Devices
+
+| Stateless Features | Normal Traffic | DoS Attack
+| ------------- |:-------------:| -----:|
+| Packet Size     |  100-1200 bytes 로 다양하다   |  최대한 많이 연결 신청을 하기 위해 크기가 매우 작다. 약 90 %가 100 bytes 보다 크기가 작다 |
+| Interpacket Interval   | 규칙적인 간격으로 패킷 사이에 시간이 걸린다|  거의 0 에 가까운 패킷 사이에 시간 간격 |
+| Protocol Distribution | 비디오 스트리밍으로 인해 UDP 프로토콜이 TCP 프로토콜보다 약 3배 더 많았다      |   TCP 프로토콜이 UDP 보다 약 3배 더 많았다 |
+
+![alt text](/images/stateful_features.png "Logo Title Text 1")
+
+Stateful feature는 반대로, 네트워크 트래픽이 시간에 따라 어떻게 발전하는지 나타냅니다.
+그렇기 때문에 stateful feature를 추출하기 위해서는 네트워크 트래픽을 기기마다 나눈 뒤 또 시간마다 나누어야 하는 번거로움이 있으며 이러한 과정에서 어쩔 수 없는 오버헤드가 발생합니다. 
+
+| Stateful Features | Normal Traffic와 DoS Attack의 차이 
+| ------------- |:-------------:| -----:|
+| Average Bandwidth    |   DoS Attack이 Normal Traffic에 비해 더 높은 평균 bandwidth 를 가진다|
+| Changes in the number of distinct destination IP address  | DoS Attack이 Normal Traffic에 비해 더 많은 새로운 end point를 가진다 |
+
+
+[실험 결과]
+----
+
+실험에서 사용한 classifier은 다음과 같습니다. 
+1) K-nearest neighbors algorithm(KN)
+2) Support vector machine with linear kernel(LSVM)
+3) Decision tree using Gini impurity scores (DF)
+4) Random Forest using Gini impurity scores (RF)
+5) Neural Network(NN)
+
+![alt text](/images/classification_results.png "Logo Title Text 1")
+###### 이미지 출처: Machine Learning DDoS Detection for consumer Internet Of Things Devices
+
+5가지의 다른 분류 모델을 사용하여 머신러닝 학습을 시켰습니다. 수집한 데이터 85%를 사용하여 트레이닝을 시켰고 나머지 15% 데이터로 학습 결과를 테스트하였습니다. 결과는 아래와 같습니다. 
+
+분류 모델 성능 평가 지표를 이해하기 위해서는 머신러닝 모델이 틀리는 경우의 수들을 먼저 이해해 봅시다.
+
+
+| Case | Definition
+| ---- | ------ | 
+| True Positive | 실제 positive인 정답을 positive라고 알맞게 예측 |
+| True Negative | 실제 negative인 정답을 negative라고 알맞게 예측 |
+| False Positive | 실제 negative 인 정답을 positive이라고 틀리게 예측 (Error Type 1)
+| False Negative | 실제 positive인 정답을 negative라고 예측 (Error Type 2) | 
+
+이 실험에서 False Positive은 실제로 normal 한 traffic을 DoS 어택라고 틀리게 예측하는 게 됩니다. 한편, False Negative은 실제 Dos 어택을 normal traffic 이라고 생각하여 탐지하지 못하는 게 되겠습니다. 
+
+표에서는 총 4가지의 지표를 사용하여 모델의 성능을 비교합니다. 
+
+1. Precision(정밀도) : True라고 예측한 것 중에서 실제로 True인 비율 
+  true positives/ (true positive + false positive)
+2. Recall(재현율) : 실제로 정답이 True 인 것 중에서 분류기가 True로 예측한 비율
+   true positive/(True Positive + False Negatives)
+3. F1(조화평균): recall, precision 둘 중 하나가 0에 가깝게 낮을 때 지표에 그것이 균형 있게 반영하여 모델의 성능이 좋지 않다는 것을 잘 확인하기 위한 지표. 
+   2 * (precision*recall) / (precision+recall)
+  
+4. Accuracy (정확도) : 전체 예측 건수에서 정답을 맞힌 건수의 비율 
+ (true positive + true negative) / (true positive + true negative + false positive + false  negative)
+
+이를 통해 테이블을 이해하면  4가지 (KN,DT,RF,NN) 모델은 모두 굉장히 높은 정답률을 가졌다는 걸 확인 할 수 있습니다. 5가지 모델 중에 제일 낮은 정답률을 가진 것은 Support vector machine with linear kernel(LSVM) 이였는데 이는 데이터가 선형적으로 분리될 수 없다는 걸 나타냅니다. 
+
+![alt text](/images/gini_score.png "Logo Title Text 1")
+###### 이미지 출처: Machine Learning DDoS Detection for consumer Internet Of Things Devices
+
+위 지표는 지니 불순도입니다. 이는 집합에 이질적인 것이 얼마나 섞였는지를 측정하는 지표이며 어떤 집합에서 한 항목을 뽑아 무작위로 라벨을 추정할 때 틀릴 확률을 말합니다. 집합에 있는 항목이 모두 같다면 지니 불순도는 최솟값(0)을 갖게 되며 이 집합은 완전히 순수하다고 할 수 있습니다. 이 지표를 통해 우리는 # destinations, bandwidth 인 stateful feature 들은 Gini score이 매우 낮은걸 알 수 있는데 이는 normal traffic과 attack traffic을 해당 feature을 통해 구분하기 어렵다는걸 뜻합니다. 반대로 packet size와 is_HTTP(protocol 분류) 와 같은 stateless feature들은 높은 gini score 을 가져서 이항 분류를 하는데 굉장히 중요한 특징이라는 걸 알 수 있습니다. 
+
+
+![alt text](/images/features.png "Logo Title Text 1")
+###### 이미지 출처: Machine Learning DDoS Detection for consumer Internet Of Things Devices
+
+
+하지만 그렇다고 stateful feature이 전혀 도움이 되지 않는 걸까요? stateless feature 만을 사용한 모델과 두 가지를 모두 사용한 모델을 비교한 지표입니다. stateful feature을 통해 F1 스코어가 모든 알고리즘에서 0.01~0.05 증가한걸 볼 수 있습니다.
+
+
+저자는 이 논문은 실제 환경에서 IoT Dos 탐지를 위한 머신 러닝 모델 연구에 동기를 부여할 것이라 말합니다. 또한 앞으로 정확도를 더 높이기 위해 더 많은 양, 그리고 다양한 IoT device를 사용하여 데이터를 수집할 것을 말합니다. 또한 더 다양한 feature을 사용하고 더 복잡한 머신러닝 기술을 사용한다면 더 성능이 높은 파이프라인을 구성할 수 있을 것이라 주장합니다.
+
+
+끝으로, 본 연구에서는 패킷 레벨 머신 학습을 통해 IoT 장치의 일반 트래픽과 DoS 공격 트래픽을 정확하게 구분할 수 있음을 보여 주었습니다. 
