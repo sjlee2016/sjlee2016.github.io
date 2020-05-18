@@ -7,25 +7,20 @@ categories: research machine-learning
 Machine Learning 을 사용한 IOT DDOS attack 구분 시스템 
 ----
 
-----
 논문 구현을 위해 필요한 것들 
 ====
 
-제가 선택한 논문인 Machine Learning DDoS Detection for consumer Internet Of Things Devices](https://ieeexplore.ieee.org/document/8424629) 에서는 저자가 직접 데이터를 수집하였습니다. 저자가 논문을 쓸 당시에는 IoT DoS 트래픽 데이터는 퍼블릭 데이터가 없어 직접 네트워크를 구축하고 트래픽을 만들어서 어택하고 데이터 수집해야 했습니다. 
+제가 선택한 논문인 [Machine Learning DDoS Detection for consumer Internet Of Things Devices](https://ieeexplore.ieee.org/document/8424629) 에서는 저자가 직접 데이터를 수집하였습니다. 저자가 논문을 쓸 당시에는 IoT DoS 트래픽 데이터는 퍼블릭 데이터가 없어 직접 네트워크를 구축하고 트래픽을 만들어서 어택하고 데이터 수집해야 했습니다. 
 다행히 현재는 IOT Dos 트래픽 데이터를 구할 수 있어서 라즈베리 파이등을 사용해 네트워크를 구축하는 단계를 건너 뛸 수 있었습니다.  제가 사용한 데이터는 [ieee-data port 사이트](https://ieee-dataport.org/open-access/iot-network-intrusion-dataset) 에서 다운로드를 하였습니다. 해당 데이터는  스마트 홈 디바이스인 SKT NUGU (NU 100) 와 EZVIZ Wi-Fi Camera (C2C Mini O Plus 1080P) 를 사용하여 수집된 42개의 pcap file입니다. 
 dos-synflooding,scan-hostport, scan-portos mirai-udpflooding, mirai-ackflooding mirai-httpflooding, mirai-hostbruteforce 등 다양한 어택들의 pcap 파일이 존재했지만  
 ML 모델을 구축하기 위해 저는 benign-dec.pcap 와 mirai-httpflooding-1-dec.pcap 를 사용하였습니다. 
 
 | PCAP Filename | DATE | # of Normal Packet | # of Attack Packet
 | ------------- |:-------------:| -----:|
-| benign-dec.pcap    | 5/20/2019 | 137396 | 0
+| benign-dec | 5/20/2019 | 137396 | 0
+| mirai-httpflooding-1-dec |  8/1/2019 | 13764 | 764
 
-
-
-benign-dec.pcap	5/20/2019	117937	NUGU, EZVIZ	Normal	Normal	-	137396	0
-
-mirai-httpflooding-1-dec.pcap	8/1/19	10093	EZVIZ (performs), external server (target)	Mirai Botnet	HTTP Flooding	ip.dst == 210.89.164.90	13764	764
-
+이와 같이 노멀 네트워크 정보를 가진 benign-dec.pcap은 attack packet을 0
 benign-dec.pcap: benign-only traffic
 
 mirai-httpflooding-n(1~4)-dec.pcap
