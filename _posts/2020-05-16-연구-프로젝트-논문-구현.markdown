@@ -58,9 +58,6 @@ benign과 attack 패킷을 합쳐주기전에 해당 패킷이 attack 인지 아
 
 ![alt text](/images/data_table.png "Protocol")
 
-
-![alt text](/images/protocol_benign.png "Protocol")
-
 ```
 feature_columns = []
 feature_layer_inputs = {}
@@ -68,27 +65,18 @@ feature_layer_inputs = {}
 for header in ['duration', 'packetSize', 'ack', 'length']:
   feature_columns.append(feature_column.numeric_column(header))
   feature_layer_inputs[header] = tf.keras.Input(shape=(1,), name=header)
-
-# bucketized cols
-duration_buckets = feature_column.bucketized_column(duration, boundaries=[0,1])
-feature_columns.append(duration_buckets)
-
-# indicator cols
+```
+feature layer을 사용하기 위해 해당 코드를 작성 하였습니다. int 와 float type 인 duration, packetSize, ack, length 입니다. 
+```
 protocol = feature_column.categorical_column_with_vocabulary_list(
       'protocol', ['TCP', 'UDP','TLS', 'ICMP', 'ARP', 'DNS', 'HTTP', 'SSH'])
 protocol_one_hot = feature_column.indicator_column(protocol)
 feature_columns.append(protocol_one_hot)
 feature_layer_inputs['protocol'] = tf.keras.Input(shape=(1,), name='protocol', dtype=tf.string)
+```
+위의 4가지 feature 과 다르게 protocol type은 문자열이기 때문에 원핫 인코딩 방식을 사용해야 했습니다. 여기서 원-핫 인코딩은 단어 집합의 크기를 벡터의 차원으로 하고, 표현하고 싶은 단어의 인덱스에 1의 값을 부여하고, 다른 인덱스에는 0을 부여하는 단어의 벡터 표현 방식입니다. ['TCP', 'UDP','TLS', 'ICMP', 'ARP', 'DNS', 'HTTP', 'SSH'] 와 같은 프로토콜에 각자 인덱스를 부여하여 숫자로 인코딩하여 머신러닝에 사용될 수 있게 데이터 타입을 바꾸는 것 입니다. 
 
-# embedding cols
-protocol_embedding = feature_column.embedding_column(protocol, dimension=8)
-feature_columns.append(protocol_embedding)
-
-# crossed cols
-crossed_feature = feature_column.crossed_column([duration_buckets , protocol], hash_bucket_size=1000)
-crossed_feature = feature_column.indicator_column(crossed_feature)
-feature_columns.append(crossed_feature)
-
+```
 batch_size = 32
 train_ds = df_to_dataset(train, batch_size=batch_size)
 val_ds = df_to_dataset(val, shuffle=False, batch_size=batch_size)
@@ -104,7 +92,7 @@ baggage_pred = layers.Dense(1, activation='sigmoid')(x)
 
 model = keras.Model(inputs=[v for v in feature_layer_inputs.values()], outputs=baggage_pred)
 ```
-
+끝으로 batch size는 32를 사용하였고 위에서 선택한 feature 을 사용하여 layer 을 만들었습니다. 
 ```
 model.compile(optimizer=keras.optimizers.RMSprop(learning_rate=1e-3),
               loss='binary_crossentropy',
@@ -114,8 +102,13 @@ model.fit(train_ds,
           validation_data=val_ds,
           epochs=5)
 ```
-
+epoch 5를 사용하고 loss function으로 binary_cross entropy 를 사용하였습니다. 그리고 결과는 .9945 로 매우 높은 정확도를 얻을 수 있었습니다. 
 ![alt text](/images/result.png "Result")
+
+
+
+
+![alt text](/images/protocol_benign.png "Protocol")
 
 
 ![alt text](/images/protocol_http.png "protocol benign" )
