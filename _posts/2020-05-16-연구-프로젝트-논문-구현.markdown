@@ -23,11 +23,11 @@ dos-synflooding,scan-hostport, scan-portos mirai-udpflooding, mirai-ackflooding 
 
 convert pcap to csv file 
 ===
-해당 데이터는 pcap 파일이기 때문에 머신러닝 모델에 쓸 수 있게 csv 파일 포멧으로 바꿔주어야 했습니다. 그러하여 etwork상의 packet을 분석해서 보여주는 무료 오픈 툴인 wireshark의 커멘드를 사용하여 csv 파일을 생성하였습니다. 
+해당 데이터는 pcap 파일이기 때문에 머신러닝 모델에 쓸 수 있게 csv 파일 포멧으로 바꿔주어야 했습니다. 그러하여 etwork상의 packet을 분석해서 보여주는 무료 오픈 툴인 wireshark의 리눅스 커멘드를 사용하여 csv 파일을 생성하였습니다. 
 ```
 tshark -r benign-dec.pcap  -T fields  -e _ws.col.Protocol -e frame.time_delta  -e frame.len -e tcp.flags  -e tcp.ack -e tcp.len -E header=y -E quote=d -E separator=, -E occurrence=f > benign.csv
 ```
-CSV 를 생성할때 feature 로 사용될 frame.time_delta, packet size, ack number 와 length 저장하도록 하였습니다.
+CSV 를 생성할때 feature 로 사용될 protocol type, frame.time_delta, packet size, ack number 와 length 저장하도록 하였습니다.
 
 ```
 tshark -r mirai-httpflooding-1-dec.pcap -Y "ip.addr==210.89.164.90" -T fields  -e _ws.col.Protocol -e frame.time_delta  -e frame.len -e tcp.flags  -e tcp.ack -e tcp.len -E header=y -E quote=d -E separator=, -E occurrence=f > attack.csv
@@ -35,7 +35,12 @@ tshark -r mirai-httpflooding-1-dec.pcap -Y "ip.addr==210.89.164.90" -T fields  -
 모든 packet 이 normal 한 benign-dec.pcap과 다르게  mirai-httpflooding-1-dec.pcap 은 attack 과 normal 패킷으로 구성되어 있기 때문에 필터링이 더 필요하였습니다.
 데이터 작성자에 의하면 attack packet 은 공통적으로 destination ip 가 210.89.164.90 입니다. 그러하여 -Y "ip.addr==210.89.164.90" 라는 필터를 사용하여 attack packet 만 필터링하여 csv 를 만들었습니다. 
 
-3 feature extraction 
-duration 
-number of packets
-protocol
+실험 코드와 결과
+===
+Keras를 사용하여 ML 모델링을 하였으며 Google codelab 환경에서 실행하였습니다. 해당 jupyter notebook은 [github](https://github.com/sjlee2016/sjlee2016.github.io/blob/master/ipynb/ML_model_attack.ipynb)에 업로드하였습니다. 
+
+
+![alt text](/images/result.png "Result")
+
+
+![alt text](/images/protocol.png "Protocol")
