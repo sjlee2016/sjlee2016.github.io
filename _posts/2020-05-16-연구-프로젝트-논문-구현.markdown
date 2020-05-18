@@ -49,7 +49,7 @@ Keras를 사용하여 ML 모델링을 하였으며 Google codelab 환경에서 �
 ![alt text](/images/protocol_benign.png "Protocol")
 
 
-![alt text](/images/protocol_http.png "protocol benign")
+![alt text](/images/protocol_http.png "protocol benign" ){width=250px}
 
 ![alt text](/images/packet_size_graph.png "Packet size")
 
