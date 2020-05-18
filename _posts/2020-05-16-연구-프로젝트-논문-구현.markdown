@@ -59,10 +59,63 @@ benign과 attack 패킷을 합쳐주기전에 해당 패킷이 attack 인지 아
 ![alt text](/images/data_table.png "Protocol")
 
 
-![alt text](/images/result.png "Result")
-
-
 ![alt text](/images/protocol_benign.png "Protocol")
+
+```
+feature_columns = []
+feature_layer_inputs = {}
+# numeric cols
+for header in ['duration', 'packetSize', 'ack', 'length']:
+  feature_columns.append(feature_column.numeric_column(header))
+  feature_layer_inputs[header] = tf.keras.Input(shape=(1,), name=header)
+
+# bucketized cols
+duration_buckets = feature_column.bucketized_column(duration, boundaries=[0,1])
+feature_columns.append(duration_buckets)
+
+# indicator cols
+protocol = feature_column.categorical_column_with_vocabulary_list(
+      'protocol', ['TCP', 'UDP','TLS', 'ICMP', 'ARP', 'DNS', 'HTTP', 'SSH'])
+protocol_one_hot = feature_column.indicator_column(protocol)
+feature_columns.append(protocol_one_hot)
+feature_layer_inputs['protocol'] = tf.keras.Input(shape=(1,), name='protocol', dtype=tf.string)
+
+# embedding cols
+protocol_embedding = feature_column.embedding_column(protocol, dimension=8)
+feature_columns.append(protocol_embedding)
+
+# crossed cols
+crossed_feature = feature_column.crossed_column([duration_buckets , protocol], hash_bucket_size=1000)
+crossed_feature = feature_column.indicator_column(crossed_feature)
+feature_columns.append(crossed_feature)
+
+batch_size = 32
+train_ds = df_to_dataset(train, batch_size=batch_size)
+val_ds = df_to_dataset(val, shuffle=False, batch_size=batch_size)
+test_ds = df_to_dataset(test, shuffle=False, batch_size=batch_size)
+
+feature_layer = tf.keras.layers.DenseFeatures(feature_columns)
+feature_layer_outputs = feature_layer(feature_layer_inputs)
+
+x = layers.Dense(128, activation='relu')(feature_layer_outputs)
+x = layers.Dense(64, activation='relu')(x)
+
+baggage_pred = layers.Dense(1, activation='sigmoid')(x)
+
+model = keras.Model(inputs=[v for v in feature_layer_inputs.values()], outputs=baggage_pred)
+```
+
+```
+model.compile(optimizer=keras.optimizers.RMSprop(learning_rate=1e-3),
+              loss='binary_crossentropy',
+             metrics=['accuracy'])
+
+model.fit(train_ds,
+          validation_data=val_ds,
+          epochs=5)
+```
+
+![alt text](/images/result.png "Result")
 
 
 ![alt text](/images/protocol_http.png "protocol benign" )
