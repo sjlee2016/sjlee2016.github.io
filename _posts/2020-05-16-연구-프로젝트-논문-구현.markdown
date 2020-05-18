@@ -108,13 +108,25 @@ epoch 5를 사용하고 loss function으로 binary_cross entropy 를 사용하�
 
 
 
+개선점
+===
+99.45% 의 정확도를 얻었다고해도 실제 DOS attack 을 성공적이게 detect 할 수 있는 ML 모델이라고 단정 지을 수 없습니다. 
+저의 실험에서 사용된 http flooding attack은 동일한 URL을 반복적으로 요청하는 공격으로 웹페이지의 파라미터를 변조하여 반복적으로 요청하는 공격입니다. 따라서 사용된 데이터에서 benign 네트워크의 protocol distribution에 디해 HTTP 가 훨씬 더 많은 비율을 차지 했습니다. 
 ![alt text](/images/protocol_benign.png "Protocol")
 
 
 ![alt text](/images/protocol_http.png "protocol benign" )
 
+또한 packet size를 그래프 해봤을때 (benign 은 0, attack은 1로 표현) benign 은 0~2000 byte 로 다양한 반면 attack일때는 0~200 사이로 매우 작았습니다. 
 
 ![alt text](/images/packetSize.png "Packet size")
 
+이렇게 간단히 그래프를 그려보아도 한눈에 알 수 있을 정도로 benign traffic 와 http-flooding attack traffic의 차이는 protocol distribution과 패킷 사이즈만을 이용해도 뚜렷하게 구분을 할 수 있었습니다. 
+
+하지만 이는 사용된 데이터셋의 benign traffic 데이터가 HTTP protocol을 사용한 페킷이 매우 적어서 나온 결과라고 생각이 듭니다. 
+
+만약 정상적인 네트워크 상태가 HTTP GET이 많다면 (예를 들어 웹을 사용하는 home device) 결과가 다를 것이라 예상됩니다. 실제로 논문에서 사용된 저자의 데이터 셋에서는 normal traffic에서 UDP 가 75% 정도를 차지했습니다. 반대로 제가 사용한 데이터셋에서 normal traffic은 95% 정도가 모두 TCP 프로토콜을 사용하였습니다. 이 말은 즉시, benign traffic 은 IOT device 에 따라 매우 다른 패턴과 특징을 가진다는 것입니다. 
+
+그렇기에 제가 구현한 ML 모델은 데이터를 수집할때 사용한 해당 device에 한정되어 benign traffic 과 http-flooding attack traffic 을 높은 확률로 분류 할 수 있는것이라 할 수 있습니다. 
 
 
