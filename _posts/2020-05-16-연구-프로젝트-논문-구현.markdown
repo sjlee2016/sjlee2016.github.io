@@ -43,20 +43,23 @@ tshark -r mirai-httpflooding-1-dec.pcap -Y "ip.addr==210.89.164.90" -T fields  -
 Keras를 사용하여 ML 모델링을 하였으며 Google codelab 환경에서 실행하였습니다. 해당 jupyter notebook은 [github](https://github.com/sjlee2016/sjlee2016.github.io/blob/master/ipynb/ML_model_attack.ipynb)에 업로드하였습니다. 
 
 
+![alt text](/images/data.png "Protocol")
+
+![alt text](/images/data_number.png "Protocol")
+
+![alt text](/images/data_table.png "Protocol")
+
+
 ![alt text](/images/result.png "Result")
 
 
 ![alt text](/images/protocol_benign.png "Protocol")
 
 
-![alt text](/images/protocol_http.png "protocol benign" ){width=250px}
-
-![alt text](/images/packet_size_graph.png "Packet size")
+![alt text](/images/protocol_http.png "protocol benign" )
 
 
 ![alt text](/images/packet_size.png "Packet size")
-
-![alt text](/images/protocol_distribution.png "protocol benign")
 
 
 
