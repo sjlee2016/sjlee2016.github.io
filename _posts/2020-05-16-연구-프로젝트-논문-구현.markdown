@@ -21,8 +21,11 @@ dos-synflooding,scan-hostport, scan-portos mirai-udpflooding, mirai-ackflooding 
 
 이와 같이 노멀 네트워크 정보를 가진 benign-dec.pcap은 오직 normal packet들로 구성되어있고 mirai-httpflooding-1-dec.pcap은 13764개의  Normal packet 과 764 개의 attack packet으로 구성되어 있습니다. 
 
-convert pcap to csv file 
+Data Preprocessing
 ===
+
+![alt text](/images/wireshark.png "wireshark")
+
 해당 데이터는 pcap 파일이기 때문에 머신러닝 모델에 쓸 수 있게 csv 파일 포멧으로 바꿔주어야 했습니다. 그러하여 etwork상의 packet을 분석해서 보여주는 무료 오픈 툴인 wireshark의 리눅스 커멘드를 사용하여 csv 파일을 생성하였습니다. 
 ```
 tshark -r benign-dec.pcap  -T fields  -e _ws.col.Protocol -e frame.time_delta  -e frame.len -e tcp.flags  -e tcp.ack -e tcp.len -E header=y -E quote=d -E separator=, -E occurrence=f > benign.csv
@@ -43,4 +46,17 @@ Keras를 사용하여 ML 모델링을 하였으며 Google codelab 환경에서 �
 ![alt text](/images/result.png "Result")
 
 
-![alt text](/images/protocol.png "Protocol")
+![alt text](/images/protocol_benign.png "Protocol")
+
+
+![alt text](/images/protocol_http.png "protocol benign")
+
+![alt text](/images/packet_size_graph.png "Packet size")
+
+
+![alt text](/images/packet_size.png "Packet size")
+
+![alt text](/images/protocol_distribution.png "protocol benign")
+
+
+
