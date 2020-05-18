@@ -43,9 +43,18 @@ tshark -r mirai-httpflooding-1-dec.pcap -Y "ip.addr==210.89.164.90" -T fields  -
 Keras를 사용하여 ML 모델링을 하였으며 Google codelab 환경에서 실행하였습니다. 해당 jupyter notebook은 [github](https://github.com/sjlee2016/sjlee2016.github.io/blob/master/ipynb/ML_model_attack.ipynb)에 업로드하였습니다. 
 
 
-![alt text](/images/data.png "Protocol")
+![alt text](/images/data.png "Data")
+benign.csv 와 attack.csv 를 구글 드라이브에 업로드 한 뒤에 
+마운트를 시키고 읽어주었습니다.  그 후, column들을 protocol, duration, packetSize, tcp flags, ack, length로 바꿔주었습니다. 
 
+```
+attackData['isAttack'] = 1
+benignData['isAttack']=0
+```
 ![alt text](/images/data_number.png "Protocol")
+benign과 attack 패킷을 합쳐주기전에 해당 패킷이 attack 인지 아닌지 구분하기 위해 isAttack 이라는 column을 생성하였습니다. 공격 패킷이면 isAttack이 1 이며 정상 패킷이면 0을 가집니다. 그리하여 제가 만든 ML모델은 해당 패킷이 isAttack이 0, 1 인지 구분하는 binary classifier입니다. 
+
+그 이후에 benign 과 attack packet 을 합쳐주었고 80%를 train에 사용하고 나머지 20%를 테스트에 사용하였습니다. 따라서 훈련 샘플의 사이즈는 88422, 검증 샘플 사이즈는 22106 그리고 테스트 샘플의 사이즈는 27632 였습니다. 
 
 ![alt text](/images/data_table.png "Protocol")
 
@@ -59,7 +68,7 @@ Keras를 사용하여 ML 모델링을 하였으며 Google codelab 환경에서 �
 ![alt text](/images/protocol_http.png "protocol benign" )
 
 
-![alt text](/images/packet_size.png "Packet size")
+![alt text](/images/packetSize.png "Packet size")
 
 
 
