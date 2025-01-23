@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/portforlio-website/static/css/main.be2e7874.css",
+    "main.js": "/portforlio-website/static/js/main.c46d0011.js",
+    "static/js/488.e8837787.chunk.js": "/portforlio-website/static/js/488.e8837787.chunk.js",
+    "static/media/profile.jpg": "/portforlio-website/static/media/profile.e3d16b16442824222406.jpg",
+    "static/media/metaLogo.png": "/portforlio-website/static/media/metaLogo.9957756d5fef4a5d4d39.png",
+    "static/media/amazonwebservices-original-wordmark.svg": "/portforlio-website/static/media/amazonwebservices-original-wordmark.b6a223a18ab9f53bbbf741396aac2f4a.svg",
+    "index.html": "/portforlio-website/index.html",
+    "main.be2e7874.css.map": "/portforlio-website/static/css/main.be2e7874.css.map",
+    "main.c46d0011.js.map": "/portforlio-website/static/js/main.c46d0011.js.map",
+    "488.e8837787.chunk.js.map": "/portforlio-website/static/js/488.e8837787.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.be2e7874.css",
+    "static/js/main.c46d0011.js"
+  ]
+}
