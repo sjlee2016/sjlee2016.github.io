@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Se Jin Lee | Software Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --ink: #f8fafc;
+    --accent: #3b82f6; 
+    --accent2: #10b981; 
+    --mute: #94a3b8;
+    --dot: #334155;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+
+body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'VT323', ui-monospace, Menlo, monospace;
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+    image-rendering: pixelated;
+}
+
+.pixel-font {
+    font-family: "Press Start 2P", monospace;
+}
+
+/* Layout Wrapper */
+.layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    max-width: 1000px;
+    width: 100%;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.left-col {
+    flex: 1;
+    min-width: 320px;
+    display: flex;
+    justify-content: center;
+}
+
+.right-col {
+    flex: 1.2;
+    min-width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Static Profile Section */
+.profile {
+    background: var(--card);
+    border: 4px solid var(--ink);
+    box-shadow: 6px 6px 0 var(--dot);
+    padding: 20px;
+    margin-bottom: 8px;
+}
+
+.profile-top {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 16px;
+}
+
+.profile-pic {
+    width: 80px;
+    height: 80px;
+    border: 4px solid var(--ink);
+    box-shadow: 4px 4px 0 var(--dot);
+    object-fit: cover;
+}
+
+.profile h1 {
+    font-size: 20px;
+    margin: 0 0 8px;
+    color: var(--accent2);
+    line-height: 1.4;
+}
+
+.profile h2 {
+    font-size: 16px;
+    color: var(--mute);
+    margin: 0;
+}
+
+.contact-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 11px;
+}
+
+.contact-links a {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+}
+.contact-links a:hover {
+    color: var(--accent);
+    border-bottom: 2px solid var(--accent);
+}
+
+/* Globe Container */
+.globe {
+    width: min(100%, 460px);
+    aspect-ratio: 1;
+    background: #0b1121;
+    border: 4px solid var(--ink);
+    box-shadow: 6px 6px 0 var(--dot);
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+}
+
+/* Resume Event Card */
+.card {
+    background: var(--card);
+    border: 4px solid var(--ink);
+    box-shadow: 6px 6px 0 var(--dot);
+    padding: 20px;
+    min-height: 240px;
+    display: flex;
+    flex-direction: column;
+}
+
+.card.pop { animation: pop .28s steps(5); }
+@keyframes pop {
+    0% { transform: translateY(10px); opacity: .2; }
+    100% { transform: none; opacity: 1; }
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    border-bottom: 2px dashed var(--dot);
+    padding-bottom: 10px;
+}
+
+.ico {
+    font-size: 32px;
+    line-height: 1;
+    animation: hop 1.5s steps(2) infinite;
+}
+@keyframes hop { 50% { transform: translateY(-4px); } }
+
+.yr {
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
+    padding: 6px 10px;
+    border: 2px solid var(--ink);
+}
+
+.t {
+    font-size: 22px;
+    line-height: 1.2;
+    margin: 0 0 6px;
+    color: var(--accent2);
+}
+
+.p {
+    font-size: 16px;
+    color: var(--accent);
+    margin: 0 0 12px;
+}
+
+/* Expandable Description */
+.desc-box {
+    font-size: 16px;
+    line-height: 1.4;
+    color: var(--ink);
+    overflow: hidden;
+    position: relative;
+}
+
+.desc-box ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.desc-box li {
+    margin-bottom: 8px;
+}
+
+.desc-box p {
+    margin: 0 0 8px;
+}
+
+.desc-box.collapsed {
+    max-height: 90px;
+}
+
+.desc-box.collapsed::after {
+    content: "";
+    position: absolute;
+    bottom: 0; left: 0; right: 0; height: 40px;
+    background: linear-gradient(to bottom, transparent, var(--card));
+}
+
+.view-more-btn {
+    background: none;
+    border: none;
+    color: var(--accent);
+    cursor: pointer;
+    font-size: 10px;
+    text-align: left;
+    padding: 6px 0 0;
+    margin-top: 8px;
+    box-shadow: none;
+    display: none;
+    align-self: flex-start;
+}
+.view-more-btn:hover {
+    color: var(--ink);
+}
+
+/* Navigation */
+.nav {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+}
+
+button.nav-btn {
+    font: inherit;
+    font-family: "Press Start 2P", monospace;
+    font-size: 11px;
+    flex: 1;
+    padding: 16px 8px;
+    background: var(--card);
+    color: var(--ink);
+    border: 4px solid var(--ink);
+    box-shadow: 4px 4px 0 var(--dot);
+    cursor: pointer;
+    transition: transform 0.05s, box-shadow 0.05s;
+}
+
+button.nav-btn:hover:not(:disabled) {
+    background: var(--dot);
+}
+
+button.nav-btn:active:not(:disabled) {
+    transform: translate(4px, 4px);
+    box-shadow: none;
+}
+
+button.nav-btn:disabled {
+    background: var(--bg);
+    color: var(--dot);
+    border-color: var(--dot);
+    cursor: default;
+    box-shadow: none;
+    transform: none;
+}
+
+/* Progress Dots */
+.dots {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 4px;
+}
+
+.dots i {
+    width: 14px;
+    height: 14px;
+    background: var(--bg);
+    border: 2px solid var(--mute);
+    cursor: pointer;
+}
+
+.dots i.on {
+    background: var(--accent2);
+    border-color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ico, .card.pop { animation: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="layout">
+    <!-- Left Column: Globe -->
+    <div class="left-col">
+        <div class="globe">
+            <canvas id="c" width="160" height="160" aria-label="Pixel globe showing where each career event happened"></canvas>
+        </div>
+    </div>
+
+    <!-- Right Column: Info & Timeline -->
+    <div class="right-col">
+        
+        <!-- Static Profile Header -->
+        <div class="profile">
+            <div class="profile-top">
+                <img src="1782394581833.jpg" alt="Se Jin Lee Profile Picture" class="profile-pic">
+                <div>
+                    <h1 class="pixel-font">SE JIN LEE</h1>
+                    <h2 class="pixel-font">Software Engineer<br><br>📍 London, UK</h2>
+                </div>
+            </div>
+            <div class="contact-links pixel-font">
+                <a href="mailto:s19339@nyu.edu">Email</a> |
+                <a href="https://linkedin.com/in/sejin-lee16" target="_blank">LinkedIn</a> |
+                <a href="https://github.com/sjlee2016" target="_blank">GitHub</a>
+            </div>
+        </div>
+
+        <!-- Interactive Event Card -->
+        <div class="card" id="card" aria-live="polite"></div>
+
+        <!-- Timeline Navigation -->
+        <div class="nav">
+            <button id="prev" class="nav-btn">&#9664; PREV</button>
+            <button id="next" class="nav-btn">NEXT &#9654;</button>
+        </div>
+
+        <div class="dots" id="dots"></div>
+    </div>
+</div>
+
+<script>
+// Event Data matching Resume exactly
+var EV=[
+{y:'1997',t:'Born',p:'Seoul, South Korea', e:'🍼', la:37.57, lo:126.98,
+ d:'<p>Hello, world! The adventure begins.</p>'},
+
+{y:'2006',t:'Moved to Malaysia',p:'Kuala Lumpur, Malaysia', e:'🏫', la:3.14, lo:101.69,
+ d:'<p>Attended International School of Kuala Lumpur.</p>'},
+
+{y:'Mar 2016',t:'Started at Sogang Univ.',p:'Seoul, South Korea', e:'📚', la:37.57, lo:126.98,
+ d:'<p>Started Bachelor of Science in Computer Science.</p>'},
+
+{y:'Sep 2018',t:'SWE Intern',p:'Playphone, Inc | Sunnyvale, CA', e:'💻', la:37.37, lo:-122.04,
+ d:'<ul><li>Utilized Java Spring Boot to build a robust web server for the backend infrastructure.</li><li>Designed and optimized a SQL database that enables seamless scalability as the user base continues to grow.</li><li>Collaborated with previous and existing engineers to enhance the overall performance and efficiency of the platform through bug fixes and other optimization techniques.</li></ul>'},
+
+{y:'Feb 2021',t:'Graduated Sogang Univ.',p:'Seoul, Korea', e:'🎓', la:37.57, lo:126.98,
+ d:'<p>Bachelor of Science in Computer Science.</p><p>Placed 1st place in track 4 of the Dialog System Technology Challenge 9. Co-authored papers accepted at AAAI 2021 and HCI Korea 2021.</p>'},
+
+{y:'Sep 2021',t:'MS in Computer Science',p:'New York University | New York, NY', e:'🗽', la:40.71, lo:-74.0,
+ d:'<p>Masters of Science in Computer Science GPA: 3.727/4.0</p><p>Relevant Coursework: Data Structures and Fundamental Algorithms, Distributed Computing, Natural Language Processing, Artificial Intelligence, Operating Systems, Computer Architecture.</p>'},
+
+{y:'May 2022',t:'SWE Intern',p:'Meta, Inc | Menlo Park, CA', e:'🌞', la:37.45, lo:-122.18,
+ d:'<ul><li>Developed internal tools to facilitate monitoring, configuration, and maintenance of diverse components within Facebook\'s infrastructure.</li><li>Designed a reusable frontend user interface (UI) utilizing Typescript and React, and implemented robust backend controllers using PHP and GraphQL.</li><li>Conducted thorough unit testing to verify consistent behavior and functionality of the new UI and controllers.</li></ul>'},
+
+{y:'May 2023',t:'Associate SWE',p:'JPMorgan Chase & Co | New York, NY', e:'🏢', la:40.71, lo:-74.0,
+ d:'<ul><li>Spearheaded data transformation pipelines for statement generation using AWS Glue, AWS Athena, and PySpark to process complex data, reducing ETL job runtime by 40% and cutting data scan costs by 30% through query and partition optimization.</li><li>Implemented schema validation and data quality checks in ETL pipelines to ensure completeness and regulatory compliance across complex, nested datasets stored in S3.</li><li>Developed Spring Boot-based microservice architecture for core banking operations, enabling seamless integration with internal systems and reliable statement delivery for millions of retail customers.</li><li>Participated in monthly architecture review meetings, contributed to system design decisions, and collaborated with cross-functional teams to improve scalability and maintainability.</li></ul>'},
+
+{y:'Jul 2026',t:'Software Engineer',p:'Google | London, UK', e:'🇬🇧', la:51.5, lo:-0.12,
+ d:'<p>Moved to London to start at Google.</p>'}
+];
+
+// Continent Polygons
+var POLY=[
+[[-168,66],[-162,70],[-140,70],[-125,70],[-95,72],[-80,70],[-65,60],[-56,52],[-66,44],[-70,42],[-76,35],[-81,31],[-80,25],[-83,29],[-90,30],[-97,27],[-97,21],[-90,21],[-87,21],[-88,16],[-83,10],[-78,8],[-80,7],[-86,12],[-92,15],[-105,20],[-112,29],[-110,23],[-117,32],[-124,40],[-124,48],[-135,58],[-150,60],[-165,55],[-160,58]],
+[[-55,60],[-45,60],[-20,70],[-20,82],[-55,82],[-70,77]],
+[[-78,8],[-72,12],[-62,10],[-52,5],[-50,0],[-35,-6],[-39,-15],[-48,-26],[-58,-38],[-65,-42],[-68,-52],[-72,-54],[-75,-45],[-71,-30],[-70,-18],[-76,-14],[-81,-5],[-80,0]],
+[[-10,36],[-9,43],[-2,44],[-5,48],[2,51],[8,54],[10,57],[12,55],[20,55],[22,60],[30,60],[22,65],[25,70],[40,68],[60,70],[80,73],[105,78],[130,72],[160,70],[180,68],[180,65],[165,60],[155,58],[140,55],[135,45],[130,42],[127,40],[129,35],[126,35],[125,38],[122,40],[121,37],[119,35],[122,30],[120,25],[110,21],[106,19],[108,12],[105,9],[100,13],[100,8],[103,1.5],[101,3],[98,8],[98,16],[94,17],[91,22],[87,21],[80,15],[77,8],[73,17],[72,21],[67,24],[57,25],[56,27],[50,30],[48,29],[51,25],[56,24],[59,22],[52,16],[43,13],[38,22],[34,28],[35,33],[36,36],[27,37],[26,40],[22,38],[22,36],[19,41],[13,45],[16,41],[18,40],[12,42],[8,44],[3,43],[0,39],[-5,36]],
+[[-17,21],[-10,30],[-6,36],[10,37],[11,33],[20,31],[32,31],[34,28],[38,20],[43,12],[51,12],[48,5],[40,-3],[40,-15],[35,-24],[32,-29],[26,-34],[19,-35],[15,-27],[12,-17],[13,-8],[9,-1],[9,4],[4,6],[-8,4],[-13,8],[-17,14]],
+[[114,-22],[122,-18],[130,-12],[137,-12],[142,-11],[146,-19],[153,-26],[150,-37],[141,-38],[135,-34],[130,-31],[115,-34]],
+[[109,2],[117,7],[119,1],[116,-4],[110,-3]],
+[[95,5],[98,4],[104,-2],[106,-6],[101,-3]],
+[[130,31],[132,34],[136,34],[140,36],[142,40],[141,45],[140,41],[137,37],[133,35],[130,33]],
+[[-5,50],[1,51],[2,53],[-2,56],[-3,58],[-6,57],[-3,54],[-5,52]],
+[[-10,52],[-6,52],[-6,55],[-10,54]]
+];
+
+function inside(x,y,p){var c=false;for(var i=0,j=p.length-1;i<p.length;j=i++){var a=p[i],b=p[j];if((a[1]>y)!=(b[1]>y)&&x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0])c=!c}return c}
+var G=new Uint8Array(180*90);
+for(var r=0;r<90;r++)for(var q=0;q<180;q++){var lo=q*2-179,la=r*2-89;for(var k=0;k<POLY.length;k++)if(inside(lo,la,POLY[k])){G[r*180+q]=1;break}}
+
+var W=160, CX=80, CY=80, R=58, D=Math.PI/180;
+var cv=document.getElementById('c'), ctx=cv.getContext('2d');
+var off=document.createElement('canvas'); off.width=off.height=W;
+var og=off.getContext('2d'), img=og.createImageData(W,W);
+
+var OC=[[30,41,59],[15,23,42],[11,17,33]], LC=[[52,211,153],[16,185,129],[4,120,87]];
+var stars=[]; for(var s=0;s<40;s++) stars.push([Math.random()*W|0,Math.random()*W|0,Math.random()*6]);
+
+var cur=0, lat0=EV[0].la*.8, lon0=EV[0].lo;
+function wrap(a){return((a+540)%360)-180}
+
+function drawGlobe(){
+ var sp=Math.sin(lat0*D), cp=Math.cos(lat0*D), d=img.data;
+ for(var y=0;y<W;y++)for(var x=0;x<W;x++){
+  var nx=(x+.5-CX)/R, ny=(CY-y-.5)/R, rr=nx*nx+ny*ny, i=(y*W+x)*4;
+  if(rr>1){d[i+3]=0;continue}
+  var z=Math.sqrt(1-rr), la=Math.asin(ny*cp+z*sp)/D, lo=lon0+Math.atan2(nx,z*cp-ny*sp)/D;
+  lo=((lo+540)%360)-180;
+  var land=G[Math.min(89,Math.max(0,(la+90)/2|0))*180+Math.min(179,(lo+180)/2|0)];
+  var sh=.5-nx*.35+ny*.4+z*.3, lv=sh>.72?0:sh>.45?1:2, c=land?LC[lv]:OC[lv];
+  if(rr>.9){c=[15,23,42]}
+  d[i]=c[0]; d[i+1]=c[1]; d[i+2]=c[2]; d[i+3]=255}
+ og.putImageData(img,0,0)
+}
+
+function proj(la,lo){
+ var p=la*D, dl=(lo-lon0)*D, sp=Math.sin(lat0*D), cp=Math.cos(lat0*D);
+ var c=sp*Math.sin(p)+cp*Math.cos(p)*Math.cos(dl);
+ return{v:c>.05, x:CX+R*Math.cos(p)*Math.sin(dl), y:CY-R*(cp*Math.sin(p)-sp*Math.cos(p)*Math.cos(dl))}
+}
+
+var PIN=[" RRR ","RRRRR","RRWRR","RRRRR"," RRR ","  R  "];
+function pin(x,y,bob){
+ x=Math.round(x)-2; y=Math.round(y)-6-bob;
+ ctx.fillStyle="#1e293b"; ctx.fillRect(x-1,y-1,7,8);
+ for(var r=0;r<PIN.length;r++)for(var q=0;q<5;q++){
+  var ch=PIN[r][q]; if(ch==" ")continue;
+  ctx.fillStyle=ch=="W"?"#fff":"#facc15"; 
+  ctx.fillRect(x+q,y+r,1,1)
+ }
+}
+
+function frame(t){
+ lon0+=wrap(EV[cur].lo-lon0)*.07; lat0+=(EV[cur].la*.8-lat0)*.07;
+ ctx.fillStyle="#0b1121"; ctx.fillRect(0,0,W,W);
+ 
+ for(var i=0;i<stars.length;i++){
+  var s=stars[i]; if(Math.sin(t/400+s[2])>-.3){ ctx.fillStyle="#475569"; ctx.fillRect(s[0],s[1],1,1) }
+ }
+ drawGlobe(); ctx.drawImage(off,0,0);
+ 
+ for(var j=0;j<=cur;j++){
+  var p=proj(EV[j].la,EV[j].lo);
+  if(p.v&&j!=cur){ ctx.fillStyle="#3b82f6"; ctx.fillRect(Math.round(p.x)-1,Math.round(p.y)-1,3,3) }
+ }
+ 
+ var c=proj(EV[cur].la,EV[cur].lo);
+ if(c.v) pin(c.x,c.y,Math.sin(t/200)>0?2:0);
+ 
+ requestAnimationFrame(frame)
+}
+
+var card=document.getElementById('card'), dots=document.getElementById('dots'), pv=document.getElementById('prev'), nx=document.getElementById('next');
+
+EV.forEach(function(e,i){
+ var b=document.createElement('i'); b.tabIndex=0; b.title=e.y;
+ b.onclick=function(){go(i)}; b.onkeydown=function(k){if(k.key=='Enter')go(i)};
+ dots.appendChild(b);
+});
+
+function go(i){
+ cur=Math.max(0,Math.min(EV.length-1,i)); var e=EV[cur];
+ 
+ card.innerHTML = 
+    '<div class="row"><span class="ico">'+e.e+'</span><span class="yr pixel-font">'+e.y+'</span></div>' +
+    '<p class="t pixel-font">'+e.t+'</p><p class="p pixel-font">&#9873; '+e.p+'</p>' +
+    '<div class="desc-box collapsed" id="desc-box">' + e.d + '</div>' +
+    '<button class="view-more-btn pixel-font" id="view-more-btn">VIEW MORE &#9660;</button>';
+ 
+ card.classList.remove('pop'); void card.offsetWidth; card.classList.add('pop');
+ pv.disabled=cur==0; nx.disabled=cur==EV.length-1;
+ Array.prototype.forEach.call(dots.children,function(d,k){d.className=k==cur?'on':''});
+
+ requestAnimationFrame(function(){
+     var dBox = document.getElementById('desc-box');
+     var vBtn = document.getElementById('view-more-btn');
+     if(dBox.scrollHeight > 90) {
+         vBtn.style.display = 'block';
+         vBtn.onclick = function() {
+             if(dBox.classList.contains('collapsed')) {
+                 dBox.classList.remove('collapsed');
+                 vBtn.innerHTML = 'VIEW LESS &#9650;';
+             } else {
+                 dBox.classList.add('collapsed');
+                 vBtn.innerHTML = 'VIEW MORE &#9660;';
+             }
+         };
+     }
+ });
+}
+
+pv.onclick=function(){go(cur-1)};
+nx.onclick=function(){go(cur+1)};
+document.onkeydown=function(k){if(k.key=='ArrowRight')go(cur+1); if(k.key=='ArrowLeft')go(cur-1)};
+
+go(EV.length-1); // Starts at the most recent entry (London)
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
